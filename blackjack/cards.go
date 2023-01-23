@@ -1,6 +1,10 @@
 package blackjack
 
-import "github.com/fatih/color"
+import (
+	"strconv"
+
+	"github.com/fatih/color"
+)
 
 
 
@@ -45,4 +49,16 @@ type Card struct {
 func (c Card) Print() {
 	x := color.New(c.Suit.Color())
 	x.Print(c.Name+c.Suit.Char())
+}
+
+func (c Card) Value() int {
+	v, err := strconv.Atoi(c.Name)
+	if err != nil {
+		if c.Name == "A" {
+			v = 11
+		} else {
+			v = 10
+		}
+	}
+	return v
 }

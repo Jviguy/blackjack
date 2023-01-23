@@ -1,45 +1,64 @@
 package blackjack
 
+import (
+	"fmt"
+	"math/rand"
+	"time"
+)
+
 type Shoe struct {
-	ActiveDecks []*Deck
-	DeckIndex   int
+	Cards []Card
+	Size int
+	Count int
 }
 
 func (s *Shoe) Shuffle() {
-	for i := range s.ActiveDecks {
-		deck := NewDeck()
-		deck.Shuffle()
-		s.ActiveDecks[i] = deck
+	s.Count = 0
+	cards := make([]Card,0,52*s.Size)
+	for i := 0; i < 52*s.Size; i++ {
+		cards = append(cards, Card{})
 	}
-}
-
-func (s *Shoe) NextDeck() {
-	s.DeckIndex++
-	if s.DeckIndex > len(s.ActiveDecks) {
-		s.Shuffle()
+	x := rand.NewSource(time.Now().UnixNano())
+	r := rand.New(x)
+	for _, card := range s.Cards {
+		index := r.Intn(52*s.Size)
+		for cards[index].Name != "" {
+			index = rand.Intn(52*s.Size)
+		}
+		cards[index] = card
 	}
+	s.Cards = cards
 }
 
 func (s *Shoe) TakeCard() Card {
-	deck := s.ActiveDecks[s.DeckIndex]
-	if len(deck.Cards) < 1 {
-		s.NextDeck()
-		return s.TakeCard()
+	if len(s.Cards) == 0 {
+		s.Shuffle()
 	}
-	return deck.TakeTopCard()
+	c := s.Cards[len(s.Cards)-1]
+	s.Cards = s.Cards[:len(s.Cards)-1]
+	if c.Value() <= 7 {
+		s.Count += 1
+	} else if c.Value() > 9 {
+		s.Count -= 1
+	}
+	return c
 }
 
 func (s *Shoe) Print() {
-	for _, deck := range s.ActiveDecks {
-		deck.Print()
+	for i, c := range s.Cards {
+		if i != 0 {
+			fmt.Print(", ")
+		}
+		c.Print()
 	}
+	fmt.Println()
 }
 
 func NewShoe(size int) *Shoe {
-	s := Shoe{DeckIndex: 0,ActiveDecks: make([]*Deck, 0 , size)}
+	s := Shoe{Size: size}
 	for i := 0; i < size; i++ {
-		s.ActiveDecks = append(s.ActiveDecks, NewDeck())
-		s.ActiveDecks[i].Shuffle()
+		s.Cards = append(s.Cards, NewDeck().Cards...)
 	}
+	s.Shuffle()
 	return &s
 }
