@@ -1,8 +1,10 @@
 package main
 
-import "github.com/jviguy/blackjack/blackjack"
+import (
+	"github.com/jviguy/blackjack/blackjack"
+)
 
 func main() {
-	deck := blackjack.NewDeck()
-	deck.Print()
+	shoe := blackjack.NewShoe(6)
+	shoe.Print()
 }

@@ -44,5 +44,5 @@ type Card struct {
 
 func (c Card) Print() {
 	x := color.New(c.Suit.Color())
-	x.Print(c.Suit.Char() + " " + c.Name)
+	x.Print(c.Name+c.Suit.Char())
 }
