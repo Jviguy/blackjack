@@ -1,7 +1,18 @@
 package blackjack
 
+import "fmt"
+
+type HandStatus uint8
+
+const (
+	Active HandStatus = iota
+	Stand
+	Busted
+)
+
 type Hand struct {
 	Cards []Card
+	Status HandStatus
 }
 
 func (h *Hand) IsSoft() bool {
@@ -43,4 +54,14 @@ func (h *Hand) Split(c Card) Hand {
 	other := h.Cards[1]
 	h.Cards = h.Cards[:1]
 	return Hand{Cards: []Card{other}}
+}
+
+func (h *Hand) Print() {
+	for i, card := range h.Cards {
+		if i != 0 {
+			fmt.Print(", ")
+		}
+		card.Print()
+	}
+	fmt.Println()
 }

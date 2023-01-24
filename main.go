@@ -5,6 +5,6 @@ import (
 )
 
 func main() {
-	shoe := blackjack.NewShoe(6)
-	shoe.Print()
+	table := blackjack.Table{Rules: blackjack.SS17,Shoe: blackjack.NewShoe(6)}
+	table.StartRound()
 }
